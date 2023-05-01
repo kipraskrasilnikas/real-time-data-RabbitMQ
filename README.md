@@ -33,7 +33,7 @@ To start the publisher, run python publisher.py from the root directory of the p
 
 To start the subscriber, run python subscriber.py from the root directory of the project. The subscriber will listen to the RabbitMQ queues and collect the published messages. Once it has received the specified number of messages, it will stop listening to the queues and print the collected messages.
 
-##Notes
+## Notes
 - Make sure your RabbitMQ instance is running before starting the publisher and subscriber.
 - If you need to change any of the environment variables, update the .env file before starting the publisher and subscriber.
 - The mappers.py file contains a helper function used to generate the names of the RabbitMQ queues and routing keys. You don't need to modify this file unless you want to change the naming scheme for the queues and routing keys.
