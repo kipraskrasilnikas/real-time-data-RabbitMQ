@@ -27,11 +27,11 @@ Before you begin, ensure you have met the following requirements:
 
 ### Publisher
 
-To start the publisher, run python publisher.py from the root directory of the project. The publisher will generate random numbers and publish them to the specified RabbitMQ queues
+To start the publisher, run `python publisher.py` from the root directory of the project. The publisher will generate random numbers and publish them to the specified RabbitMQ queues
 
 ### Subscriber
 
-To start the subscriber, run python subscriber.py from the root directory of the project. The subscriber will listen to the RabbitMQ queues and collect the published messages. Once it has received the specified number of messages, it will stop listening to the queues and print the collected messages.
+To start the subscriber, run `python subscriber.py` from the root directory of the project. The subscriber will listen to the RabbitMQ queues and collect the published messages. Once it has received the specified number of messages, it will stop listening to the queues and print the collected messages.
 
 ## Notes
 - Make sure your RabbitMQ instance is running before starting the publisher and subscriber.
