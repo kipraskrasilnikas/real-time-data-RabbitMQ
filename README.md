@@ -1,6 +1,6 @@
 # Real-Time data streaming in RabbitMQ
 
-A project that sends 500 numbers (ranging from -100 to 100) generated at random, through the selected amount of channels(queues) in real time.
+A project that sends X amount of numbers (ranging from -100 to 100) generated at random, through the selected amount of channels(queues) in real time.
 
 ## Prerequisites
 
