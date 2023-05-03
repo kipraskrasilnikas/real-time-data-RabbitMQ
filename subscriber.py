@@ -31,7 +31,6 @@ def callback(ch, method, properties, body):
         # Append messages to array if channel is not full
         if len(messages) != RESULTS_INTERVAL:
             messages[channel].append(body)
-        print(messages[channel])
 
         # Set the all_received event when all channels have RESULTS_INTERVAL of messages
         if all(
@@ -41,21 +40,22 @@ def callback(ch, method, properties, body):
             all_received.set()
 
 
-# Create a channel and connection for each queue, store all channels
-for i in range(RABBITMQ_QUEUE_COUNT):
-    queueName = get_value_with_suffix(name=RABBITMQ_QUEUE_PREFIX, index=i)
+def create_channels_for_queues():
+    # Create a channel and connection for each queue, store all channels
+    for i in range(RABBITMQ_QUEUE_COUNT):
+        queueName = get_value_with_suffix(name=RABBITMQ_QUEUE_PREFIX, index=i)
 
-    # RabbitMQ connection and channel
-    channel = connection.channel()
-    channel.basic_consume(
-        queue=queueName, on_message_callback=callback, auto_ack=True
-    )
-    channel.queue_bind(
-        exchange=RABBITMQ_EXCHANGE,
-        queue=queueName,
-        routing_key=RABBITMQ_ROUTING_KEY_PREFIX + str(i + 1),
-    )
-    channels.append(channel)
+        # RabbitMQ connection and channel
+        channel = connection.channel()
+        channel.basic_consume(
+            queue=queueName, on_message_callback=callback, auto_ack=True
+        )
+        channel.queue_bind(
+            exchange=RABBITMQ_EXCHANGE,
+            queue=queueName,
+            routing_key=RABBITMQ_ROUTING_KEY_PREFIX + str(i + 1),
+        )
+        channels.append(channel)
 
 
 # Define the function to run for each queue listener
@@ -63,14 +63,23 @@ def listen_to_queues(channel):
     channel.start_consuming()
 
 
-# Create a thread pool executor and submit a listener function for each queue
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    futures = [executor.submit(listen_to_queues, channel) for channel in channels]
+def listen_to_queues_with_threadpool():
+    # Create a thread pool executor and submit a listener function for each queue
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(listen_to_queues, channel) for channel in channels]
 
-    # Wait for all consumers to receive RESULTS_INTERVAL amount of messages
-    all_received.wait()
+        # Wait for all consumers to receive RESULTS_INTERVAL amount of messages
+        all_received.wait()
 
-    for channel in channels:
-        channel.stop_consuming()
+        for channel in channels:
+            channel.stop_consuming()
 
-    connection.close()
+        connection.close()
+
+
+def main():
+    create_channels_for_queues()
+    listen_to_queues_with_threadpool()
+
+
+main()
